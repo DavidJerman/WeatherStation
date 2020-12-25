@@ -12,7 +12,8 @@ while True:
                                      datetime.now().strftime("%d"), datetime.now().strftime("%H"),\
                                      datetime.now().strftime("%M")
     for file in os.listdir("./static"):
-        os.remove(file)
+        if file != "other":
+            os.remove(file)
     name = "_" + year + "_" + month + "_" + day + "_" + hour + "_" + minute
 
     camera.start_preview()
