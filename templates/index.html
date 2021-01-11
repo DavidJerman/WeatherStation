@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<head>
+    <title>Zagorje ob Savi Weather</title>
+    <style>
+        table, th, td, img {
+            border: 5px solid black;
+            border-collapse: collapse;
+            padding: 10px;
+            font-family: sans-serif;
+            font-size: 20px;
+        }
+        .centered {
+            align-content: center;
+            text-align: center;
+        }
+    </style>
+    <link rel="icon" href="{{ url_for('static', filename='other/web_icon.ico') }}">
+</head>
+<body style="margin: 0;">
+    <div style="background-image: url({{ url_for('static', filename='other/bg.png') }});
+                background-size: cover;
+                height: 100%;
+                width: 100%;
+                padding: 30px;
+                margin: 0;
+                background-repeat: repeat-y;">
+        <h1 class="centered">
+            Weather in Zagorje ob Savi
+        </h1>
+        <table class="centered" style="margin: 20px auto;">
+            <tr>
+                <td>Date:</td>
+                <td>{{ date }}</td>
+            </tr>
+            <tr>
+                <td>Temperature:</td>
+                <td>{{ temp }}</td>
+            </tr>
+            <tr>
+                <td>Humidity:</td>
+                <td>{{ moisture }}</td>
+            </tr>
+            <tr>
+                <td>Water "level":</td>
+                <td>{{ water }}</td>
+            </tr>
+            <tr>
+                <td>Sunlight level:</td>
+                <td>{{ sunlight }}</td>
+            </tr>
+        </table>
+        <center>
+            <img src="{{ image }}" width="50%" height="auto" style="margin: 20px auto;"/>
+            <p class="centered" style="font-family: sans-serif; font-size:25px;">Live view from the weather station.</p>
+            <p class="centered" style="font-family: sans-serif; font-size:25px;">Photo and data updated regularly.</p>
+        </center>
+    </div>
+</body>
