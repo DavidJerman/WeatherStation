@@ -1,4 +1,5 @@
 import datetime
+from pytz import timezone
 from flask import Flask, render_template
 import sqlite3
 import os
@@ -8,11 +9,13 @@ app = Flask(__name__)
 @app.route("/")
 @app.route("/index")
 def website():
-    date = datetime.datetime.now().strftime("%d.%m.%Y - %H:%M:%S")
+    date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
+    date = date.strftime("%d-%m-%Y %H:%M:%S")
     temp, moisture, water, sunlight = get_data()
     img_name = ""
-    for file in os.listdir('./static'):
-        img_name = file
+    for file in os.listdir('static'):
+        if file != "other":
+            img_name = file
     return render_template(template_name_or_list='index.html', date=date, temp=str(temp) + " °C",
                            moisture=str(moisture) + "%", water=str(water) + " %", sunlight=str(sunlight) + " %",
                            image=os.path.join('static', img_name))
@@ -44,4 +47,4 @@ def get_data():
 
 
 if __name__ == "__main__":
-    app.run(host='0.0.0.0')
+    app.run(host='0.0.0.0', port=80)
