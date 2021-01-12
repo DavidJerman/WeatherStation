@@ -24,7 +24,7 @@ def website():
     for file in os.listdir('static/plots'):
         plot_name = file
     return render_template(template_name_or_list='index.html', date=date, temp=str(temp) + " °C",
-                           moisture=str(moisture) + "%", water=str(water) + " %", sunlight=str(sunlight) + " %",
+                           moisture=str(moisture) + "%", sunlight=str(sunlight) + " %",
                            image=os.path.join('static/imgs', img_name), plot=os.path.join('static/plots', plot_name))
 
 
@@ -55,23 +55,37 @@ def get_data():
 
 
 def create_plot():
-    year, month, day, hour, minute = datetime.datetime.now().strftime("%Y"), datetime.datetime.now().strftime("%m"), \
-                                     datetime.datetime.now().strftime("%d"), datetime.datetime.now().strftime("%H"), \
-                                     datetime.datetime.now().strftime("%M")
+    year, month, day, hour, minute = datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%Y"), datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%m"), \
+                                     datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%d"), datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%H"), \
+                                     datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%M")
     for file in os.listdir("static/plots"):
         os.remove("./static/plots/" + file)
     name = "_" + year + "_" + month + "_" + day + "_" + hour + "_" + minute
 
     connection = sqlite3.connect("dataGrabber/database.sqlite3")
-    result = connection.execute("SELECT temp FROM data")
-    temps = []
-    for temp in result:
-        temps.append(temp[0])
+    # result = connection.execute(f"SELECT temp FROM data WHERE day = {day}")
+    # temps = []
+    # for temp in result:
+    #     temps.append(temp[0])
 
-    plt.plot(slope(temps, 100))
+    temps = []
+    for i in range(int(hour) + 1):
+        _sum = 0
+        result = connection.execute(f"SELECT temp FROM data WHERE hour = {i} AND day = {day}")
+        c = 0
+        for temp in result:
+            _sum += temp[0]
+            c += 1
+        if c == 0:
+            continue
+        _sum /= c
+        temps.append(_sum)
+
+    # plt.plot(slope(temps, 100))
+    plt.plot(temps)
     plt.title("Temperatures")
     plt.ylabel("Temperature [C]")
-    plt.xlabel("Measurement No.")
+    plt.xlabel("Hours [h]")
     plt.savefig(f"./static/plots/plot{name}.jpg")
     plt.close()
 

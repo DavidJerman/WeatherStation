@@ -1,6 +1,7 @@
 import sqlite3
 from serial import Serial
 import datetime
+from pytz import timezone
 
 print("Started collecting data...")
 
@@ -21,9 +22,9 @@ connection.commit()
 
 def delete_old_data():
     cursor.execute(f'''SELECT year, month, day FROM data''')
-    current_year = int(datetime.datetime.now().strftime("%Y"))
-    current_month = int(datetime.datetime.now().strftime("%m"))
-    current_day = int(datetime.datetime.now().strftime("%d"))
+    current_year = int(datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%Y"))
+    current_month = int(datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%m"))
+    current_day = int(datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%d"))
     for data_point in cursor.fetchall():
         _year, _month, _day = data_point
         if _year == current_year:
@@ -41,7 +42,7 @@ while True:
     c4 += 1
     line = str(serial_connection.readline())
     print(line)
-    date = datetime.datetime.now()
+    date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
     year = int(date.strftime("%Y"))
     month = int(date.strftime("%m"))
     day = int(date.strftime("%d"))
