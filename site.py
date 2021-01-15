@@ -3,8 +3,6 @@ from pytz import timezone
 from flask import Flask, render_template
 import sqlite3
 import os
-import matplotlib
-matplotlib.use('Agg')
 app = Flask(__name__)
 
 

@@ -2,6 +2,8 @@ from pytz import timezone
 import datetime
 import sqlite3
 import os
+import matplotlib
+matplotlib.use('Agg')
 from matplotlib import pyplot as plt
 from PIL import Image
 from time import sleep
