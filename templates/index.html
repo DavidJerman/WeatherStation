@@ -21,71 +21,80 @@
     </style>
     <link rel="icon" href="{{ url_for('static', filename='other/web_icon.ico') }}">
 </head>
-<body style="margin: 0;">
-    <div style="background-image: url({{ url_for('static', filename='other/bg.png') }});
+<body style="background-image: url({{ url_for('static', filename='other/bg.png') }});
                 background-size: cover;
                 height: 100%;
                 width: 100%;
-                padding: 30px;
                 margin: 0;
-                background-repeat: repeat-y;">
-        <h1 class="centered">
+                padding: 20px 0">
+    <div>
+        <h1 class="centered" style="padding-bottom: 25px; font-size: 40px;">
             Weather in Zagorje ob Savi
         </h1>
-        <table style="margin: 0 auto;">
-            <tr>
-                <td style="margin: 10px 50px 10px 50px;">
-                    <table class="table" style="margin: 0 auto;">
-                        <tr>
-                            <td class="table">Date:</td>
-                            <td class="table">{{ date }}</td>
-                        </tr>
-                        <tr>
-                            <td class="table">Temperature:</td>
-                            <td class="table">{{ temp }}</td>
-                        </tr>
-                        <tr>
-                            <td class="table">Humidity:</td>
-                            <td class="table">{{ moisture }}</td>
-                        </tr>
-                        <tr>
-                            <td class="table">Sunlight level:</td>
-                            <td class="table">{{ sunlight }}</td>
-                        </tr>
-                    </table>
-                </td>
-                <td>
-                    <img class="img" src="{{ temp_plot }}" width="auto" height="80%" style="margin: 10px 10px 10px 10px;">
-                </td>
-            </tr>
-            <tr>
-                <td>
-                </td>
-                <td style="font-family: sans-serif; font-size: 20px; text-align: center;">
-                    Temperature levels today.
-                </td>
-            </tr>
-            <tr>
-                <td>
-                    <img class="img" src="{{ humidity_plot }}" width="auto" height="80%" style="margin: 10px 10px 10px 10px;">
-                </td>
-                <td>
-                    <img class="img" src="{{ light_plot }}" width="auto" height="80%" style="margin: 10px 10px 10px 10px;">
-                </td>
-            </tr>
-            <tr>
-                <td style="font-family: sans-serif; font-size: 20px; text-align: center;">
-                    Humidity levels today.
-                </td>
-                <td style="font-family: sans-serif; font-size: 20px; text-align: center;">
-                    Light levels today.
-                </td>
-            </tr>
-        </table>
-        <center>
+        <div style="width: 70%; text-align: center; align-content: center; margin: auto">
+            <table style="width: 100%; text-align: center;">
+                <tr style="text-align: center;">
+                    <td style="text-align: center;">
+                        <center>
+                            <table class="table" style="width: 70%;">
+                                <tr>
+                                    <td class="table">Date:</td>
+                                    <td class="table">{{ date }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table">Temperature:</td>
+                                    <td class="table">{{ temp }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table">Humidity:</td>
+                                    <td class="table">{{ moisture }}</td>
+                                </tr>
+                                <tr>
+                                    <td class="table">Sunlight level:</td>
+                                    <td class="table">{{ sunlight }}</td>
+                                </tr>
+                            </table>
+                        </center>
+                    </td>
+                    <td style="text-align: center;">
+                        <img class="img" src="{{ temp_plot }}" width="90%" height="auto" style="text-align: center;">
+                    </td>
+                </tr>
+                <tr style="text-align: center;">
+                    <td>
+                    </td>
+                    <td style="text-align: center;">
+                        <p style="font-family: sans-serif; font-size: 20px; text-align: center;">
+                            Temperature levels today.
+                        </p>
+                    </td>
+                </tr>
+                <tr style="text-align: center;">
+                    <td>
+                        <img class="img" src="{{ humidity_plot }}" width="90%" height="auto" style="text-align: center;">
+                    </td>
+                    <td>
+                        <img class="img" src="{{ light_plot }}" width="90%" height="auto" style="text-align: center;">
+                    </td>
+                </tr>
+                <tr style="text-align: center;">
+                    <td >
+                        <p style="font-family: sans-serif; font-size: 20px; text-align: center;">
+                            Humidity levels today.
+                        </p>
+                    </td>
+                    <td style="text-align: center;">
+                        <p style="font-family: sans-serif; font-size: 20px; text-align: center;">
+                            Light levels today.
+                        </p>
+                    </td>
+                </tr>
+            </table>
+        </div>
+        <div style="text-align: center;">
             <img class="img" src="{{ image }}" width="50%" height="auto" style="margin: 20px auto;"/>
             <p class="centered" style="font-family: sans-serif; font-size:25px;">Live view from the weather station.</p>
             <p class="centered" style="font-family: sans-serif; font-size:25px;">Photo and data updated regularly.</p>
-        </center>
+        </div>
     </div>
 </body>
