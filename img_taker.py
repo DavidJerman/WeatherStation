@@ -20,7 +20,7 @@ while True:
     camera.capture(f"./static/imgs/view{name}.jpg")
     camera.stop_preview()
     picture = Image.open(f"./static/imgs/view{name}.jpg")
-    picture.save(f"./static/imgs/view_compressed{name}.jpg", optimize=True, quality=60)
+    picture.save(f"./static/imgs/view_compressed{name}.jpg", optimize=True, quality=90)
     os.remove(f'./static/imgs/view{name}.jpg')
     print("Image taken: " + str(c))
     sleep(61)
