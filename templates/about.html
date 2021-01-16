@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static', filename='other/web_icon.ico') }}">
+    <title>About</title>
+</head>
+<body style="background-image: url({{ url_for('static', filename='other/bg.png') }});
+                background-size: cover;
+                height: 100%;
+                width: 100%;
+                margin: 0;
+                padding-top: 20px">
+    <center>
+        <div style="text-align: center; width: 50%; padding: 20px">
+            <h style="text-align: center; font-family: sans-serif; font-size: 28px;">
+                About this website
+            </h>
+            <p style="font-family: sans-serif; font-size: 20px; padding-top: 10px;">
+                This website was created as a hobby, as a part of a smaller project - A weather station.
+                The aim of this project was to crate a small weather station and measure certain meteorological variables
+                such as the temperature, humidity, brightness and additionally taking some photos of the surroundings.
+                Data is obtained using a set of sensors hooked up to an arduino, which then sends its measurements to
+                Raspberry Pi, which collects and saves the data into an sqlite database. This data is then displayed
+                on this website. The source code and more about the project can be found
+                <a href="https://github.com/DavidJerman/WeatherStation">here</a>.
+            </p>
+        </div>
+    </center>
+</body>
+</html>

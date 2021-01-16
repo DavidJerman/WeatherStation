@@ -8,6 +8,7 @@ import os
 camera = PiCamera()
 c = 0
 while True:
+    # Takes a new photo every 61 seconds and saves it for display
     c += 1
     year, month, day, hour, minute = datetime.now().strftime("%Y"), datetime.now().strftime("%m"),\
                                      datetime.now().strftime("%d"), datetime.now().strftime("%H"),\

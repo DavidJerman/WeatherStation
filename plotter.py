@@ -122,6 +122,7 @@ def create_plot():
 
 
 def slope(source, slope_range):
+    # Average the data/plot
     avgs = []
     first = True
     for i in range(int(slope_range/2), len(source) - int(slope_range/2) - 1):

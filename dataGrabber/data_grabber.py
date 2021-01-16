@@ -21,6 +21,7 @@ connection.commit()
 
 
 def delete_old_data():
+    # Deleting old data
     cursor.execute(f'''SELECT year, month, day FROM data''')
     current_year = int(datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%Y"))
     current_month = int(datetime.datetime.now(tz=timezone('Europe/Ljubljana')).strftime("%m"))
@@ -42,6 +43,7 @@ while True:
     c4 += 1
     line = str(serial_connection.readline())
     print(line)
+    # Get the date
     date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
     year = int(date.strftime("%Y"))
     month = int(date.strftime("%m"))
@@ -49,6 +51,7 @@ while True:
     hour = int(date.strftime("%H"))
     minute = int(date.strftime("%M"))
     second = int(date.strftime("%S"))
+    # Get values from the arduino data
     light = float(line.split("light:[")[1].split("]")[0])
     water = float(line.split("water:[")[1].split("]")[0])
     temp = float(line.split("temp:[")[1].split("]")[0])
@@ -56,10 +59,12 @@ while True:
     if temp < 0:
       temp += 3276.8
       temp = -temp
+    # Insert into the database
     cursor.execute(f'''INSERT INTO data
      VALUES ({light}, {water}, {temp}, {humidity}, {year}, {month}, {day}, {hour}, {minute}, {second})''')
     connection.commit()
     print("Collected: " + str(c4))
+    # Delete old data (older than 3 days)
     if c == 1000:
         delete_old_data()
         c = 0

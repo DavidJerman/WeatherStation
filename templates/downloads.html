@@ -2,6 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <link rel="icon" href="{{ url_for('static', filename='other/web_icon.ico') }}">
     <title>Downloads</title>
 </head>
 <body style="background-image: url({{ url_for('static', filename='other/bg.png') }});
@@ -18,12 +19,16 @@
             <table style="border-collapse: collapse;">
                 <tr style="text-align: center; padding: 10px; border: 3px solid black;">
                     <td style="text-align: center; padding: 10px; border: 3px solid black;">
-                        <p>
+                        <p style="font-family: sans-serif; font-size: 20px; text-align: center;">
                             Sqlite3 Database
                         </p>
                     </td>
                     <td style="text-align: center; padding: 10px; border: 3px solid black;">
-                        <a href="/return-files/" target="blank">Download</a>
+                        <a href="/return-files/" target="blank">
+                            <p style="font-family: sans-serif; font-size: 20px; text-align: center;">
+                                Download
+                            </p>
+                        </a>
                     </td>
                 </tr>
             </table>
