@@ -1,13 +1,15 @@
 import datetime
 from pytz import timezone
-from flask import Flask, render_template
+from flask import Flask, render_template, send_file
+from shutil import copyfile
 import sqlite3
 import os
+
 app = Flask(__name__)
 
 
 @app.route("/")
-@app.route("/index")
+@app.route("/index/")
 def website():
     date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
     date = date.strftime("%d-%m-%Y %H:%M:%S")
@@ -30,6 +32,31 @@ def website():
                            temp_plot=os.path.join('static/temp_plots', temp_plot_name),
                            humidity_plot=os.path.join('static/humidity_plots', humidity_plot_name),
                            light_plot=os.path.join('static/light_plots', light_plot_name))
+
+
+@app.route("/file-downloads/")
+def download():
+    try:
+        return render_template(template_name_or_list='downloads.html')
+    except Exception as e:
+        return str(e)
+
+
+@app.route("/return-files/")
+def return_files_download():
+    try:
+        for file in os.listdir('dataGrabber/copy/'):
+            os.remove('dataGrabber/copy/' + file)
+        date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
+        date = date.strftime("%Y_%m_%d_%H_%M_%S")
+        filename = "database_" + date + ".sqlite3"
+        path = os.path.join('dataGrabber/copy', filename)
+        copyfile('dataGrabber/database.sqlite3', path)
+        path = os.path.abspath(path)
+        return send_file(path, as_attachment=True, attachment_filename=filename,
+                         mimetype="application/x-sqlite3", cache_timeout=60)
+    except Exception as e:
+        return str(e)
 
 
 def get_data():
