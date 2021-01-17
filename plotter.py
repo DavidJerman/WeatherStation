@@ -58,7 +58,7 @@ def create_plot():
             result = connection.execute(f"SELECT temp FROM data WHERE hour = {i} AND day = {day}")
             for temp in result:
                 temps.append(temp[0])
-        temps = slope(temps, 200)
+        temps = slope(temps, 400)
 
         x = np.linspace(0.0, max_range + 1, len(temps))
         y = np.array(temps)
@@ -79,7 +79,7 @@ def create_plot():
             result = connection.execute(f"SELECT humidity FROM data WHERE hour = {i} AND day = {day}")
             for hum in result:
                 hums.append(hum[0])
-        hums = slope(hums, 200)
+        hums = slope(hums, 400)
 
         x = np.linspace(0.0, max_range + 1, len(hums))
         y = np.array(hums)
@@ -124,19 +124,31 @@ def create_plot():
 def slope(source, slope_range):
     # Average the data/plot
     avgs = []
-    first = True
+    # Adding the missing data at the start
+    for i in range(int(slope_range/2)):
+        _sum = 0
+        c = 0
+        for j in range(i + 1):
+            _sum += source[i - j]
+            _sum += source[i + j]
+            c += 2
+        avgs.append(_sum/c)
+    # Averaging the data
     for i in range(int(slope_range/2), len(source) - int(slope_range/2) - 1):
-        sum = 0
+        _sum = 0
         for j in range(int(slope_range/2)):
-            sum += float(source[-j + i])
-            sum += float(source[j + i])
-        avgs.append(sum/slope_range)
-        if first:
-            first = False
-            for _ in range(int(slope_range/2) - 1):
-                avgs.append(sum/slope_range)
-    for i in range(int(slope_range/2) - 1):
-        avgs.append(avgs[len(avgs) - 1])
+            _sum += float(source[-j + i])
+            _sum += float(source[j + i])
+        avgs.append(_sum/slope_range)
+    # Adding the missing data at the end
+    for i in range(int(slope_range/2), -1, -1):
+        _sum = 0
+        c = 0
+        for j in range(i + 1):
+            _sum += source[len(source) - (i - j) - 1]
+            _sum += source[len(source) - (i + j) - 1]
+            c += 2
+        avgs.append(_sum/c)
     return avgs
 
 
