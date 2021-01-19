@@ -2,6 +2,7 @@ import sqlite3
 from serial import Serial
 import datetime
 from pytz import timezone
+from time import sleep
 
 print("Started collecting data...")
 
@@ -39,32 +40,39 @@ delete_old_data()
 c = 0
 c4 = 0
 while True:
-    c += 1
-    c4 += 1
-    line = str(serial_connection.readline())
-    print(line)
-    # Get the date
-    date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
-    year = int(date.strftime("%Y"))
-    month = int(date.strftime("%m"))
-    day = int(date.strftime("%d"))
-    hour = int(date.strftime("%H"))
-    minute = int(date.strftime("%M"))
-    second = int(date.strftime("%S"))
-    # Get values from the arduino data
-    light = float(line.split("light:[")[1].split("]")[0])
-    water = float(line.split("water:[")[1].split("]")[0])
-    temp = float(line.split("temp:[")[1].split("]")[0])
-    humidity = float(line.split("humidity:[")[1].split("]")[0])
-    if temp < 0:
-      temp += 3276.8
-      temp = -temp
-    # Insert into the database
-    cursor.execute(f'''INSERT INTO data
-     VALUES ({light}, {water}, {temp}, {humidity}, {year}, {month}, {day}, {hour}, {minute}, {second})''')
-    connection.commit()
-    print("Collected: " + str(c4))
-    # Delete old data (older than 3 days)
-    if c == 1000:
-        delete_old_data()
-        c = 0
+    try:
+        c += 1
+        c4 += 1
+        line = str(serial_connection.readline())
+        print(line)
+        # Get the date
+        date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
+        year = int(date.strftime("%Y"))
+        month = int(date.strftime("%m"))
+        day = int(date.strftime("%d"))
+        hour = int(date.strftime("%H"))
+        minute = int(date.strftime("%M"))
+        second = int(date.strftime("%S"))
+        # Get values from the arduino data
+        light = float(line.split("light:[")[1].split("]")[0])
+        water = float(line.split("water:[")[1].split("]")[0])
+        temp = float(line.split("temp:[")[1].split("]")[0])
+        humidity = float(line.split("humidity:[")[1].split("]")[0])
+        if temp < 0:
+          temp += 3276.8
+          temp = -temp
+        # Insert into the database
+        cursor.execute(f'''INSERT INTO data
+         VALUES ({light}, {water}, {temp}, {humidity}, {year}, {month}, {day}, {hour}, {minute}, {second})''')
+        connection.commit()
+        # Delete old data (older than 3 days)
+        if c == 1000:
+            delete_old_data()
+            c = 0
+    except IndexError:
+        print("Index error, trying to re-measure")
+        sleep(2)
+    except:
+        pass
+    finally:
+        print("Collected: " + str(c4))

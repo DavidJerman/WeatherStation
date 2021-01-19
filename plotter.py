@@ -157,5 +157,8 @@ def slope(source, slope_range):
 
 if __name__ == "__main__":
     while True:
-        create_plot()
+        try:
+            create_plot()
+        except:
+            print("Failed to crate a plot, will retry in 600 seconds.")
         sleep(600)
