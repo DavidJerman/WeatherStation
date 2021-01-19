@@ -37,7 +37,7 @@ def create_plot():
 
     # Make sure that there are enough measurements
     found = False
-    result = connection.execute(f"SELECT temp FROM data WHERE hour = 0 AND day = {day}")
+    result = connection.execute(f"SELECT temp FROM data WHERE hour = 2 AND day = {day}")
     for _ in result:
         found = True
         break
@@ -122,34 +122,37 @@ def create_plot():
 
 
 def slope(source, slope_range):
-    # Average the data/plot
-    avgs = []
-    # Adding the missing data at the start
-    for i in range(int(slope_range/2)):
-        _sum = 0
-        c = 0
-        for j in range(i + 1):
-            _sum += source[i - j]
-            _sum += source[i + j]
-            c += 2
-        avgs.append(_sum/c)
-    # Averaging the data
-    for i in range(int(slope_range/2), len(source) - int(slope_range/2) - 1):
-        _sum = 0
-        for j in range(int(slope_range/2)):
-            _sum += float(source[-j + i])
-            _sum += float(source[j + i])
-        avgs.append(_sum/slope_range)
-    # Adding the missing data at the end
-    for i in range(int(slope_range/2), -1, -1):
-        _sum = 0
-        c = 0
-        for j in range(i + 1):
-            _sum += source[len(source) - (i - j) - 1]
-            _sum += source[len(source) - (i + j) - 1]
-            c += 2
-        avgs.append(_sum/c)
-    return avgs
+    if len(source) > 600:
+        # Average the data/plot
+        avgs = []
+        # Adding the missing data at the start
+        for i in range(int(slope_range/2)):
+            _sum = 0
+            c = 0
+            for j in range(i + 1):
+                _sum += source[i - j]
+                _sum += source[i + j]
+                c += 2
+            avgs.append(_sum/c)
+        # Averaging the data
+        for i in range(int(slope_range/2), len(source) - int(slope_range/2) - 1):
+            _sum = 0
+            for j in range(int(slope_range/2)):
+                _sum += float(source[-j + i])
+                _sum += float(source[j + i])
+            avgs.append(_sum/slope_range)
+        # Adding the missing data at the end
+        for i in range(int(slope_range/2), -1, -1):
+            _sum = 0
+            c = 0
+            for j in range(i + 1):
+                _sum += source[len(source) - (i - j) - 1]
+                _sum += source[len(source) - (i + j) - 1]
+                c += 2
+            avgs.append(_sum/c)
+        return avgs
+    else:
+        return source
 
 
 if __name__ == "__main__":
