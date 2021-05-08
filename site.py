@@ -22,6 +22,8 @@ def website():
     temp_plot_name = ""
     humidity_plot_name = ""
     light_plot_name = ""
+    air_plot_name = ""
+    pressure_plot_name = ""
     for file in os.listdir('static/imgs'):
         img_name = file
     for file in os.listdir('static/temp_plots'):
@@ -30,13 +32,19 @@ def website():
         humidity_plot_name = file
     for file in os.listdir('static/light_plots'):
         light_plot_name = file
+    for file in os.listdir('static/air_plots'):
+        air_plot_name = file
+    for file in os.listdir('static/pressure_plots'):
+        pressure_plot_name = file
     # Returning the page to the user
     return render_template(template_name_or_list='index.html', date=date, temp=str(temp) + " °C",
                            moisture=str(moisture) + "%", sunlight=str(sunlight) + " %",
                            image=os.path.join('static/imgs', img_name),
                            temp_plot=os.path.join('static/temp_plots', temp_plot_name),
                            humidity_plot=os.path.join('static/humidity_plots', humidity_plot_name),
-                           light_plot=os.path.join('static/light_plots', light_plot_name))
+                           light_plot=os.path.join('static/light_plots', light_plot_name),
+                           air_plot=os.path.join('static/air_plots', air_plot_name),
+                           pressure_plot=os.path.join('static/pressure_plots', pressure_plot_name))
 
 
 @app.route("/file-downloads/")

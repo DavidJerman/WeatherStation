@@ -37,7 +37,8 @@ def create_plot():
 
     # Make sure that there are enough measurements
     found = False
-    result = connection.execute(f"SELECT temp FROM data WHERE hour = 2 AND day = {day}")
+    result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {2} AND"
+                                f" STRFTIME('%d', date) = {day}")
     for _ in result:
         found = True
         break
@@ -45,7 +46,8 @@ def create_plot():
     # Determine the maximum hour
     max_range = 0
     for i in range(24):
-        result = connection.execute(f"SELECT temp FROM data WHERE hour = {i} AND day = {day} AND minute > 54")
+        result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {i} AND"
+                                    f" STRFTIME('%d', date) = {day} AND STRFTIME('%M', date) > 54")
         for _ in result:
             max_range = i
             break
@@ -55,7 +57,8 @@ def create_plot():
         # Temperature Plot
         temps = []
         for i in range(int(max_range)):
-            result = connection.execute(f"SELECT temp FROM data WHERE hour = {i} AND day = {day}")
+            result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {i} AND"
+                                        f" STRFTIME('%d', date) = {day}")
             for temp in result:
                 temps.append(temp[0])
         temps = slope(temps, 400)
@@ -76,7 +79,8 @@ def create_plot():
         # Humidity Plot
         hums = []
         for i in range(int(max_range)):
-            result = connection.execute(f"SELECT humidity FROM data WHERE hour = {i} AND day = {day}")
+            result = connection.execute(f"SELECT humidity FROM data WHERE STRFTIME('%H', date) = {i} AND"
+                                        f" STRFTIME('%d', date) = {day}")
             for hum in result:
                 hums.append(hum[0])
         hums = slope(hums, 400)
@@ -97,7 +101,8 @@ def create_plot():
         # Light Level Plot
         lights = []
         for i in range(int(max_range)):
-            result = connection.execute(f"SELECT light FROM data WHERE hour = {i} AND day = {day}")
+            result = connection.execute(f"SELECT light FROM data WHERE STRFTIME('%H', date) = {i} AND"
+                                        f" STRFTIME('%d', date) = {day}")
             for light in result:
                 lights.append(light[0])
         lights = slope(lights, 50)
@@ -114,6 +119,53 @@ def create_plot():
         picture = Image.open(f"static/light_plots/plot{name}.jpg")
         picture.save(f"./static/light_plots/plot_compressed{name}.jpg", optimize=True, quality=60)
         os.remove(f'static/light_plots/plot{name}.jpg')
+
+        # Air Pollution Plot
+        # TODO: Sensor to be added, different units, this is just temporary
+        airs = []
+        for i in range(int(max_range)):
+            result = connection.execute(f"SELECT air FROM data WHERE STRFTIME('%H', date) = {i} AND"
+                                        f" STRFTIME('%d', date) = {day}")
+            for air in result:
+                airs.append(air[0])
+        airs = slope(airs, 50)
+
+        x = np.linspace(0.0, max_range + 1, len(airs))
+        y = np.array(airs)
+        plt.plot(x, y)
+        plt.title("Air Pollution Levels")
+        plt.ylabel("Air Pollution Level [ppm]")
+        plt.xlabel("Hours [h]")
+        plt.savefig(f"./static/air_plots/plot{name}.jpg")
+        plt.close()
+
+        picture = Image.open(f"static/air_plots/plot{name}.jpg")
+        picture.save(f"./static/air_plots/plot_compressed{name}.jpg", optimize=True, quality=60)
+        os.remove(f'static/air_plots/plot{name}.jpg')
+
+        # Pressure Plot
+        # TODO: Sensor to be added, different units, this is just temporary
+        pressures = []
+        for i in range(int(max_range)):
+            result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {i} AND"
+                                        f" STRFTIME('%d', date) = {day}")
+            for pressure in result:
+                pressures.append(pressure[0])
+        pressures = slope(pressures, 400)
+
+        x = np.linspace(0.0, max_range + 1, len(pressures))
+        y = np.array(pressures)
+        plt.plot(x, y)
+        plt.title("Pressure Levels")
+        plt.ylabel("Pressure [kPa]")
+        plt.xlabel("Hours [h]")
+        plt.savefig(f"./static/pressure_plots/plot{name}.jpg")
+        plt.close()
+
+        picture = Image.open(f"static/pressure_plots/plot{name}.jpg")
+        picture.save(f"./static/pressure_plots/plot_compressed{name}.jpg", optimize=True, quality=60)
+        os.remove(f'static/pressure_plots/plot{name}.jpg')
+
         connection.close()
 
         global counter
