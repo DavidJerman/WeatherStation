@@ -54,7 +54,7 @@ while True:
         minute = int(date.strftime("%M"))
         second = int(date.strftime("%S"))
         # Get values from the arduino data
-        light = float(line.split("light:[")[1].split("]")[0])
+        light = float(line.split("light:[")[1].split("]")[0]) * 100
         water = float(line.split("water:[")[1].split("]")[0])
         temp = float(line.split("temp:[")[1].split("]")[0])
         humidity = float(line.split("humidity:[")[1].split("]")[0])

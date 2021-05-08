@@ -104,7 +104,7 @@ def get_data():
             temp_avg /= 6
             humidity_avg /= 6
             connection.close()
-            return round(temp_avg, 1), round(humidity_avg, 1), round(light_avg*100, 1)
+            return round(temp_avg, 1), round(humidity_avg, 1), round(light_avg, 1)
 
 
 if __name__ == "__main__":
