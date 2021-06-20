@@ -11,19 +11,16 @@ while True:
     try:
         # Takes a new photo every 61 seconds and saves it for display
         c += 1
-        year, month, day, hour, minute = datetime.now().strftime("%Y"), datetime.now().strftime("%m"),\
-                                         datetime.now().strftime("%d"), datetime.now().strftime("%H"),\
-                                         datetime.now().strftime("%M")
+        filename = datetime.now().strftime("_%Y_%m_%d_%H_%M")
         for file in os.listdir("static/imgs"):
             os.remove("./static/imgs/" + file)
-        name = "_" + year + "_" + month + "_" + day + "_" + hour + "_" + minute
 
         camera.start_preview()
-        camera.capture(f"./static/imgs/view{name}.jpg")
+        camera.capture(f"./static/imgs/view{filename}.jpg")
         camera.stop_preview()
-        picture = Image.open(f"./static/imgs/view{name}.jpg")
-        picture.save(f"./static/imgs/view_compressed{name}.jpg", optimize=True, quality=90)
-        os.remove(f'./static/imgs/view{name}.jpg')
+        picture = Image.open(f"./static/imgs/view{filename}.jpg")
+        picture.save(f"./static/imgs/view_compressed{filename}.jpg", optimize=True, quality=90)
+        os.remove(f'./static/imgs/view{filename}.jpg')
         print("Image taken: " + str(c))
         sleep(61)
     except:

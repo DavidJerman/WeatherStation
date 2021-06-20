@@ -62,8 +62,8 @@ while True:
         pressure = float(line.split("pressure:[")[1].split("]")[0])  # TODO: Sensor to be installed
         air = float(line.split("air:[")[1].split("]")[0])  # TODO: Sensor to be installed
         if temp < 0:
-          temp += 3276.8
-          temp = -temp
+            temp += 3276.8
+            temp = -temp
         # Insert into the database
         cursor.execute(f'''INSERT INTO data
          VALUES ({light}, {water}, {temp}, {humidity}, {pressure}, {air}, {timestamp})''')
