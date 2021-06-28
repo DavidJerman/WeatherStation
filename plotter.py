@@ -31,6 +31,9 @@ def create_plot():
     # Light
     for file in os.listdir("static/light_plots"):
         os.remove("./static/light_plots/" + file)
+    # Air
+    for file in os.listdir("static/air_plots"):
+        os.remove("./static/air_plots/" + file)
 
     # Connection
     connection = sqlite3.connect("dataGrabber/database.sqlite3")
@@ -121,7 +124,6 @@ def create_plot():
         os.remove(f'static/light_plots/plot{name}.jpg')
 
         # Air Pollution Plot
-        # TODO: Sensor to be added, different units, this is just temporary
         airs = []
         for i in range(int(max_range)):
             result = connection.execute(f"SELECT air FROM data WHERE STRFTIME('%H', date) = {i} AND"
@@ -145,32 +147,35 @@ def create_plot():
 
         # Pressure Plot
         # TODO: Sensor to be added, different units, this is just temporary
-        pressures = []
-        for i in range(int(max_range)):
-            result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {i} AND"
-                                        f" STRFTIME('%d', date) = {day}")
-            for pressure in result:
-                pressures.append(pressure[0])
-        pressures = slope(pressures, 400)
-
-        x = np.linspace(0.0, max_range + 1, len(pressures))
-        y = np.array(pressures)
-        plt.plot(x, y)
-        plt.title("Pressure Levels")
-        plt.ylabel("Pressure [kPa]")
-        plt.xlabel("Hours [h]")
-        plt.savefig(f"./static/pressure_plots/plot{name}.jpg")
-        plt.close()
-
-        picture = Image.open(f"static/pressure_plots/plot{name}.jpg")
-        picture.save(f"./static/pressure_plots/plot_compressed{name}.jpg", optimize=True, quality=60)
-        os.remove(f'static/pressure_plots/plot{name}.jpg')
+        # pressures = []
+        # for i in range(int(max_range)):
+        #     result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {i} AND"
+        #                                 f" STRFTIME('%d', date) = {day}")
+        #     for pressure in result:
+        #         pressures.append(pressure[0])
+        # pressures = slope(pressures, 400)
+        #
+        # x = np.linspace(0.0, max_range + 1, len(pressures))
+        # y = np.array(pressures)
+        # plt.plot(x, y)
+        # plt.title("Pressure Levels")
+        # plt.ylabel("Pressure [kPa]")
+        # plt.xlabel("Hours [h]")
+        # plt.savefig(f"./static/pressure_plots/plot{name}.jpg")
+        # plt.close()
+        #
+        # picture = Image.open(f"static/pressure_plots/plot{name}.jpg")
+        # picture.save(f"./static/pressure_plots/plot_compressed{name}.jpg", optimize=True, quality=60)
+        # os.remove(f'static/pressure_plots/plot{name}.jpg')
 
         connection.close()
 
         global counter
         counter += 1
         print("Plots created: ", counter)
+
+    else:
+        raise Exception
 
 
 def slope(source, slope_range):

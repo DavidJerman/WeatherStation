@@ -59,7 +59,8 @@ while True:
         water = float(line.split("water:[")[1].split("]")[0])
         temp = float(line.split("temp:[")[1].split("]")[0])
         humidity = float(line.split("humidity:[")[1].split("]")[0])
-        pressure = float(line.split("pressure:[")[1].split("]")[0])  # TODO: Sensor to be installed
+        # pressure = float(line.split("pressure:[")[1].split("]")[0])  # TODO: Sensor to be installed
+        pressure = 0.0
         air = float(line.split("air:[")[1].split("]")[0])
         if temp < 0:
             temp += 3276.8
