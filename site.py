@@ -16,14 +16,14 @@ def website():
     date = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
     date = date.strftime("%d-%m-%Y %H:%M:%S")
     # Data from database
-    temp, moisture, sunlight = get_data()
+    temp, moisture, sunlight, air = get_data()
     # Getting the plots
     img_name = ""
     temp_plot_name = ""
     humidity_plot_name = ""
     light_plot_name = ""
     air_plot_name = ""
-    pressure_plot_name = ""
+    # pressure_plot_name = ""
     for file in os.listdir('static/imgs'):
         img_name = file
     for file in os.listdir('static/temp_plots'):
@@ -34,17 +34,18 @@ def website():
         light_plot_name = file
     for file in os.listdir('static/air_plots'):
         air_plot_name = file
-    for file in os.listdir('static/pressure_plots'):
-        pressure_plot_name = file
+    # for file in os.listdir('static/pressure_plots'):
+    #     pressure_plot_name = file
     # Returning the page to the user
     return render_template(template_name_or_list='index.html', date=date, temp=str(temp) + " °C",
-                           moisture=str(moisture) + "%", sunlight=str(sunlight) + " %",
+                           moisture=str(moisture) + "%", sunlight=str(sunlight) + " %", air=str(air),
                            image=os.path.join('static/imgs', img_name),
                            temp_plot=os.path.join('static/temp_plots', temp_plot_name),
                            humidity_plot=os.path.join('static/humidity_plots', humidity_plot_name),
                            light_plot=os.path.join('static/light_plots', light_plot_name),
-                           air_plot=os.path.join('static/air_plots', air_plot_name),
-                           pressure_plot=os.path.join('static/pressure_plots', pressure_plot_name))
+                           air_plot=os.path.join('static/air_plots', air_plot_name))
+                           # ,
+                           # pressure_plot=os.path.join('static/pressure_plots', pressure_plot_name))
 
 
 @app.route("/file-downloads/")
@@ -94,25 +95,29 @@ def get_data():
     # Connecting to the sql database
     connection = sqlite3.connect('dataGrabber/database.sqlite3')
     cursor = connection.cursor()
-    cursor.execute(f'''SELECT light, temp, humidity FROM data
-                        ORDER BY year DESC, month DESC, day DESC, hour DESC, minute DESC''')
+    cursor.execute(f'''SELECT light, temp, humidity, air FROM data
+                        ORDER BY date DESC''')
     # We calculate he recent averages to display for better accuracy
     c = 0
     light_avg = 0
     temp_avg = 0
     humidity_avg = 0
+    air_avg = 0
     for data in cursor.fetchall():
-        light, temp, humidity = data
+        light, temp, humidity, air = data
         light_avg += light
         temp_avg += temp
         humidity_avg += humidity
+        air_avg += air
         c += 1
         if c == 6:
             light_avg /= 6
             temp_avg /= 6
             humidity_avg /= 6
+            air_avg /= 6
             connection.close()
-            return round(temp_avg, 1), round(humidity_avg, 1), round(light_avg, 1)
+            print("Data fetched...")
+            return round(temp_avg, 1), round(humidity_avg, 1), round(light_avg, 1), round(air_avg, 1),
 
 
 if __name__ == "__main__":

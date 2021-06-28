@@ -15,7 +15,7 @@ cursor = connection.cursor()
 
 # Create table if not exists
 cursor.execute(f'''CREATE TABLE IF NOT EXISTS data (light float NOT NULL, water float NOT NULL, temp float NOT NULL,
-                   humidity float NOT NULL, pressure float NOT NULL, air float NOT NULL, date date PRIMARY KEY)''')
+                   humidity float NOT NULL, pressure float NOT NULL, air float NOT NULL, date timestamp PRIMARY KEY)''')
 connection.commit()
 
 
@@ -52,8 +52,9 @@ while True:
         hour = date.strftime("%H")
         minute = date.strftime("%M")
         second = date.strftime("%S")
-        timestamp = '{0:0>4s}-{1:0>2s}-{2:0>2s} {3:0>2s}:{4:0>2s}:{5:0>2s}'.format(year, month, day, hour, minute,
-                                                                                   second)
+        # timestamp = str('{0:0>4s}-{1:0>2s}-{2:0>2s} {3:0>2s}:{4:0>2s}:{5:0>2s}'.format(year, month, day, hour, minute,
+        #                                                                            second))
+        timestamp = datetime.datetime(int(year), int(month), int(day), int(hour), int(minute), int(second))
         # Get values from the arduino data
         light = float(line.split("light:[")[1].split("]")[0]) * 100
         water = float(line.split("water:[")[1].split("]")[0])
@@ -66,17 +67,22 @@ while True:
             temp += 3276.8
             temp = -temp
         # Insert into the database
+        print(timestamp)
         cursor.execute(f'''INSERT INTO data
-         VALUES ({light}, {water}, {temp}, {humidity}, {pressure}, {air}, {timestamp})''')
+         VALUES ({light}, {water}, {temp}, {humidity}, {pressure}, {air},
+          {timestamp})''')
         connection.commit()
         # Delete old data (older than 3 days)
         if c == 1000:
             delete_old_data()
             c = 0
+        print("Data collected: TRUE")
     except IndexError:
         print("Index error, trying to re-measure")
+        print("Data collected: FALSE")
         sleep(2)
-    except:
+    except Exception as e:
+        print(e)
         pass
     finally:
-        print("Collected: " + str(c4))
+        print("Collection: " + str(c4))
