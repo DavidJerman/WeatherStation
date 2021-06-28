@@ -60,7 +60,7 @@ while True:
         temp = float(line.split("temp:[")[1].split("]")[0])
         humidity = float(line.split("humidity:[")[1].split("]")[0])
         pressure = float(line.split("pressure:[")[1].split("]")[0])  # TODO: Sensor to be installed
-        air = float(line.split("air:[")[1].split("]")[0])  # TODO: Sensor to be installed
+        air = float(line.split("air:[")[1].split("]")[0])
         if temp < 0:
             temp += 3276.8
             temp = -temp
