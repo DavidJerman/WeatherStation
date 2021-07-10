@@ -15,8 +15,8 @@ counter = 0
 def create_plot():
     # Time
     current_time = datetime.datetime.now(tz=timezone('Europe/Ljubljana'))
-    year, month, day, hour, minute = current_time.strftime("%Y"), current_time.strftime("%m"),\
-                                     current_time.strftime("%d"), current_time.strftime("%H"),\
+    year, month, day, hour, minute = current_time.strftime("%Y"), current_time.strftime("%m"), \
+                                     current_time.strftime("%d"), current_time.strftime("%H"), \
                                      current_time.strftime("%M")
 
     name = "_" + year + "_" + month + "_" + day + "_" + hour + "_" + minute
@@ -40,28 +40,30 @@ def create_plot():
 
     # Make sure that there are enough measurements
     found = False
-    result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {2} AND"
-                                f" STRFTIME('%d', date) = {day}")
+    result = connection.execute("SELECT strftime('%H', date) from data;")
+    print("Data allocated...")
     for _ in result:
+        print("Found data!")
         found = True
         break
 
     # Determine the maximum hour
     max_range = 0
     for i in range(24):
-        result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {i} AND"
-                                    f" STRFTIME('%d', date) = {day} AND STRFTIME('%M', date) > 54")
+        result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = '{i}' AND"
+                                    f" STRFTIME('%d', date) = '{day}' AND STRFTIME('%M', date) > '54'")
         for _ in result:
             max_range = i
             break
 
     # Plot making
     if found:
+        print("Making plots...")
         # Temperature Plot
         temps = []
         for i in range(int(max_range)):
-            result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = {i} AND"
-                                        f" STRFTIME('%d', date) = {day}")
+            result = connection.execute(f"SELECT temp FROM data WHERE STRFTIME('%H', date) = '{i}' AND"
+                                        f" STRFTIME('%d', date) = '{day}'")
             for temp in result:
                 temps.append(temp[0])
         temps = slope(temps, 400)
@@ -82,8 +84,8 @@ def create_plot():
         # Humidity Plot
         hums = []
         for i in range(int(max_range)):
-            result = connection.execute(f"SELECT humidity FROM data WHERE STRFTIME('%H', date) = {i} AND"
-                                        f" STRFTIME('%d', date) = {day}")
+            result = connection.execute(f"SELECT humidity FROM data WHERE STRFTIME('%H', date) = '{i}' AND"
+                                        f" STRFTIME('%d', date) = '{day}'")
             for hum in result:
                 hums.append(hum[0])
         hums = slope(hums, 400)
@@ -104,8 +106,8 @@ def create_plot():
         # Light Level Plot
         lights = []
         for i in range(int(max_range)):
-            result = connection.execute(f"SELECT light FROM data WHERE STRFTIME('%H', date) = {i} AND"
-                                        f" STRFTIME('%d', date) = {day}")
+            result = connection.execute(f"SELECT light FROM data WHERE STRFTIME('%H', date) = '{i}' AND"
+                                        f" STRFTIME('%d', date) = '{day}'")
             for light in result:
                 lights.append(light[0])
         lights = slope(lights, 50)
@@ -126,8 +128,8 @@ def create_plot():
         # Air Pollution Plot
         airs = []
         for i in range(int(max_range)):
-            result = connection.execute(f"SELECT air FROM data WHERE STRFTIME('%H', date) = {i} AND"
-                                        f" STRFTIME('%d', date) = {day}")
+            result = connection.execute(f"SELECT air FROM data WHERE STRFTIME('%H', date) = '{i}' AND"
+                                        f" STRFTIME('%d', date) = '{day}'")
             for air in result:
                 airs.append(air[0])
         airs = slope(airs, 50)
@@ -173,6 +175,7 @@ def create_plot():
         global counter
         counter += 1
         print("Plots created: ", counter)
+        print("Making another plot in 600 seconds...")
 
     else:
         raise Exception
@@ -216,6 +219,8 @@ if __name__ == "__main__":
     while True:
         try:
             create_plot()
-        except:
+        except Exception as e:
             print("Failed to crate a plot, will retry in 600 seconds.")
+            print("Error: " + str(e))
         sleep(600)
+
